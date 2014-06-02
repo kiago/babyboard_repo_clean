@@ -1,0 +1,6 @@
+*
+!.gitignore
+!src/*
+!pom.xml
+!logo.png
+src/main/.DS_Store
