@@ -20,6 +20,7 @@ import java.util.List;
  * @author baptman
  */
 public class Baby {
+//test comm
 
     private int idBaby;
     private String name;
@@ -30,9 +31,9 @@ public class Baby {
     private SQLContainer babyTable;
     private SQLContainer factTable;
     public List<MainFact> FactList;
-    
-    Baby(int idB){
-         
+
+    Baby(int idB) {
+
         babyTable = oracle.queryTable("babies");
         babyTable.addContainerFilter(
                 new Compare.Equal("idBaby", idB));// WHERE idBaby=idBaby
@@ -45,28 +46,33 @@ public class Baby {
         sex = Integer.parseInt(infoUser.getItemProperty("sex").getValue().toString());
         firstname = infoUser.getItemProperty("firstName").getValue().toString();
     }
-    public int getId(){
+
+    public int getId() {
         return idBaby;
     }
-    public String getName(){
+
+    public String getName() {
         return name;
     }
-    public String getOld(){
+
+    public String getOld() {
         return old;
     }
-    public int getSex(){
+
+    public int getSex() {
         return sex;
     }
-    public String getFisrtname(){
+
+    public String getFisrtname() {
         return firstname;
     }
-    
-    public Component printBabyInfo(){
-        Label infoB = new Label("name "+name+" firstname: "+firstname);
+
+    public Component printBabyInfo() {
+        Label infoB = new Label("name " + name + " firstname: " + firstname);
         return infoB;
     }
-    
-        public List<MainFact> getBabyMainFacts() {
+
+    public List<MainFact> getBabyMainFacts() {
 
         factTable = oracle.queryTable("mainfacts");
         Collection factsIds = new ArrayList<Object>();
@@ -82,11 +88,11 @@ public class Baby {
                 Item infoJonctionTable = factTable.getItem(new RowId(new Object[]{i}));
 //                 MainFact(int idF, int idB, String titleF, String descriptionF, String hourF, String factF, String dateF) {
                 MainFact MF = new MainFact(Integer.parseInt(infoJonctionTable.getItemProperty("idFact").getValue().toString()),
-                Integer.parseInt(infoJonctionTable.getItemProperty("idBaby").getValue().toString()), 
+                        Integer.parseInt(infoJonctionTable.getItemProperty("idBaby").getValue().toString()),
                         infoJonctionTable.getItemProperty("title").getValue().toString(),
-                infoJonctionTable.getItemProperty("description").getValue().toString(),
-                infoJonctionTable.getItemProperty("date").getValue().toString(),
-                infoJonctionTable.getItemProperty("hours").getValue().toString());
+                        infoJonctionTable.getItemProperty("description").getValue().toString(),
+                        infoJonctionTable.getItemProperty("date").getValue().toString(),
+                        infoJonctionTable.getItemProperty("hours").getValue().toString());
                 listMFact.add(MF);
                 //test
             }
