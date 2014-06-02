@@ -21,7 +21,7 @@ public class Oracle {
 
     public Oracle(String server, String user, String pwd) {
 
-        try {
+        try {//test change on oracle java
             connectionPool = new SimpleJDBCConnectionPool("com.mysql.jdbc.Driver",
                     "jdbc:mysql://localhost:3306/babyboard", "root",
                     "root", 2, 5);
