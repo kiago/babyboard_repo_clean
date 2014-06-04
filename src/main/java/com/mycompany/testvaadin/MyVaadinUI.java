@@ -15,7 +15,7 @@ import javax.servlet.annotation.WebServlet;
 @Theme("ourtheme")
 @SuppressWarnings("serial")
 public class MyVaadinUI extends UI {
-
+//test commit
 //    public User user; //représente l'utilisateur actuelle
     public static Navigator navigator;
 
