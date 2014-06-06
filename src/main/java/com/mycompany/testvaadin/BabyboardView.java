@@ -5,6 +5,7 @@
  */
 package com.mycompany.testvaadin;
 
+import static com.mycompany.testvaadin.MyVaadinUI.navigator;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.navigator.View;
@@ -24,6 +25,7 @@ import com.vaadin.ui.VerticalLayout;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,17 +39,19 @@ public class BabyboardView extends Panel implements View {
     private User user;
     private int i = 0;
     private Baby baby;
+    private String dateString;
     private Date date;
+    
     private InlineDateField calendar;
+    private VerticalLayout mainFactComponent;
+//    private VerticalLayout mainFactLayout;
 
-    //Vue d'accueil du site (avant le log)
     public BabyboardView() {
 
         user = VaadinSession.getCurrent().getAttribute(User.class);
-//
+
         final VerticalLayout layout = new VerticalLayout();
         layout.setMargin(true);
-//        layout.addComponent(user.printUserInfo());
 
         if (user.babyList.isEmpty()) {
             Label test = new Label("Vous n'aver pas d'enfant associé à votre compte!");
@@ -57,27 +61,48 @@ public class BabyboardView extends Panel implements View {
             try {
                 i = Integer.parseInt(VaadinSession.getCurrent().getAttribute("babyNumber").toString());
                 baby = user.babyList.get(i);
-                baby.getBabyMainFacts();
+                if(!isDateVaadinSession()){
+                    layout.addComponent(new Label("zozozoozozozobbbbbbbbbbb"));
+                    date = new java.util.Date();
+                }else{
+                    date = (Date) VaadinSession.getCurrent().getAttribute("date");
+                }
+
                 layout.addComponent(baby.printBabyInfo());
 
-                layout.addComponent(mainFactComponent());
                 calendar = new InlineDateField();
-                calendar.setValue(new java.util.Date());
+                calendar.setValue(date);
+                calendar.setLocale(Locale.FRENCH);
                 calendar.addValueChangeListener(new ValueChangeListener() {
                     @Override
                     public void valueChange(Property.ValueChangeEvent event) {
+                        date = calendar.getValue();
+                        VaadinSession.getCurrent().setAttribute("date", date);
+                        navigator.navigateTo(BabyboardView.NAME);
                         Date dateCal = calendar.getValue();
+                        formatDateToString(calendar.getValue());
+//                        layout.addComponent(new Label("day"+dateCal.getDay()+"month: "+dateCal.getMonth()+"year:" +dateCal.getYear()));
+                        layout.addComponent(new Label("" + dateCal));
+//                        formatDate(dateCal.getDay(), dateCal.getMonth(), dateCal.getYear());
 
-                        formatDate(dateCal.getDay(), dateCal.getMonth(), dateCal.getYear());
-
-                        layout.addComponent(new Label("" + date));
+                        layout.addComponent(new Label("format date" + dateString));
                         final String valueString = String.valueOf(event.getProperty()
                                 .getValue());
+//                        mainFactComponent.removeAllComponents();
+                        setMainFactComponent();
                         Notification.show("Date sélectionnée: ", valueString,
                                 Type.TRAY_NOTIFICATION);
                     }
 
                 });
+                formatDateToString(calendar.getValue());
+                layout.addComponent(new Label("zouzou" + dateString));
+                formatDateToString(date);
+                baby.getBabyMainFacts(dateString);
+                setMainFactComponent();
+
+                layout.addComponent(mainFactComponent);
+
                 layout.addComponent(calendar);
 
             } catch (Exception e) {
@@ -89,22 +114,44 @@ public class BabyboardView extends Panel implements View {
     }
 
     public void enter(ViewChangeListener.ViewChangeEvent event) {
+        
+    }
+
+//    private void formatDate(int day, int month, int year) {
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+//        try {
+//            date = new Date();
+//            date = sdf.parse(year + "/" + month + "/" + day);
+//        } catch (ParseException ex) {
+//            Logger.getLogger(BabyboardView.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
+    private void formatDateToString(Date d) {
+        dateString = d.toString().substring(0, 11) + d.toString().substring(19);
+//        baby.addBabyMainFacts(date);
 
     }
 
-    private void formatDate(int day, int month, int year) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-        try {
-            date = new Date();
-            date = sdf.parse(year + "/" + month + "/" + day);
-        } catch (ParseException ex) {
-            Logger.getLogger(BabyboardView.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }
-
-    private VerticalLayout mainFactComponent() {
+    private void setMainFactComponent() {
         VerticalLayout VL = new VerticalLayout();
+        mainFactComponent = new VerticalLayout();
+        try {
+
+            for (MainFact fact : baby.FactList) {
+                Label title = new Label(fact.getTitle() + " à " + fact.getHour());
+                Label description = new Label(fact.getDescription());
+                VL.addComponent(title);
+                VL.addComponent(description);
+            }
+        } catch (Exception e) {
+            System.out.println("e");
+        }
+        mainFactComponent.addComponent(VL);
+    }
+    
+     private VerticalLayout updateMainFactComponent() {
+        VerticalLayout VL = new VerticalLayout();
+        mainFactComponent = new VerticalLayout();
         try {
 
             for (MainFact fact : baby.FactList) {
@@ -118,5 +165,16 @@ public class BabyboardView extends Panel implements View {
         }
         return VL;
     }
+     private Boolean isDateVaadinSession(){
+         Boolean isDate;
+         try{
+             VaadinSession.getCurrent().getAttribute("date").toString();
+             isDate=true;
+         } catch (Exception e) {
+            System.out.println("e");
+            isDate = false;
+        }
+         return isDate;
+     }
 
 }

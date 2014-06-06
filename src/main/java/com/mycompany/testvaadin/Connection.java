@@ -16,6 +16,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 
 /**
@@ -29,7 +30,7 @@ public class Connection extends Panel implements View {
 
 
     private TextField tf = new TextField("Email:");
-    private TextField tf2 = new TextField("Password:");
+    private PasswordField tf2 = new PasswordField("Password:");
 //    private User user; //représente l'utilisateur actuelle
     private String emailUser;
     private String passwordUser;

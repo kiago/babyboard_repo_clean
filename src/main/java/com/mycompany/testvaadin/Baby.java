@@ -6,6 +6,7 @@
 package com.mycompany.testvaadin;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.util.filter.And;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.data.util.sqlcontainer.RowId;
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
@@ -72,7 +73,7 @@ public class Baby {
         return infoB;
     }
 
-    public List<MainFact> getBabyMainFacts() {
+    public List<MainFact> getBabyMainFacts(String date) {
 
         factTable = oracle.queryTable("mainfacts");
         Collection factsIds = new ArrayList<Object>();
@@ -80,7 +81,11 @@ public class Baby {
 
         try {
             factTable.addContainerFilter(
-                    new Compare.Equal("idBaby", idBaby));// WHERE name=emailToTest AND password=passwordToTest
+                    new And(new Compare.Equal("idBaby", idBaby),
+                            new Compare.Equal("date", date)));
+
+//                    addContainerFilter(
+//                    new Compare.Equal("idBaby", idBaby));// WHERE name=emailToTest AND password=passwordToTest
             factsIds = factTable.getItemIds();
             for (Object item : factsIds) {
 
@@ -103,4 +108,24 @@ public class Baby {
         FactList = listMFact;
         return listMFact;
     }
+
+    public void addBabyMainFacts(String date) {
+
+        factTable = oracle.queryTable("mainfacts");
+        Collection factsIds = new ArrayList<Object>();
+        List<MainFact> listMFact = new ArrayList<MainFact>();
+
+        try {
+            Item rowItem = factTable.getItem(factTable.addItem());
+            rowItem.getItemProperty("idBaby").setValue(idBaby);
+            rowItem.getItemProperty("title").setValue("testAuto");
+            rowItem.getItemProperty("description").setValue("testAuto");
+            rowItem.getItemProperty("date").setValue(date);
+            rowItem.getItemProperty("hours").setValue("00:00:00");// On récupère la dernière ligne de la table parent
+            factTable.commit();
+        } catch (Exception e) {
+            System.out.println("e");
+        }
+    }
+
 }

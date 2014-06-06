@@ -1,5 +1,6 @@
 package com.mycompany.testvaadin;
 
+import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
@@ -14,6 +15,7 @@ import javax.servlet.annotation.WebServlet;
 @Title("Babyboard")
 @Theme("ourtheme")
 @SuppressWarnings("serial")
+@PreserveOnRefresh
 public class MyVaadinUI extends UI {
 //test commit
 //    public User user; //représente l'utilisateur actuelle
